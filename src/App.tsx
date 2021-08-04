@@ -18,7 +18,7 @@ function App() {
           element={
             <div className="app">
               {loading ? (
-                <div> Loading... </div>
+                <div> Loading.... </div>
               ) : user ? (
                 <UserProfile user={user} />
               ) : (

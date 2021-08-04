@@ -18,7 +18,7 @@ function Match() {
       if (token && secret && user.screen_name) {
         const data = await getMutuals(token, secret, user.screen_name);
         if (data) {
-          setMatches(data.intersect);
+          setMutuals(data.intersect);
         }
       }
     };

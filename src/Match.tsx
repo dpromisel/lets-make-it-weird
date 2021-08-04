@@ -7,29 +7,24 @@ import { getTempStorage } from "./util";
 
 function Match() {
   const { user } = useContext(AuthContext);
-  const [mutuals, setMutuals] = useState<number[]>([
-    1864578115, 2808425972, 1611103723, 3353374996, 750874892967485400,
-    336099421, 701186094436589600, 1754323310, 832721837519839200, 4899078796,
-    1656640214, 305349168, 2568044770, 3392340275, 2226268581,
-    797426175408795600, 3045561447, 2904589173, 2276458255, 1126181258,
-  ]);
+  const [mutuals, setMutuals] = useState<number[]>([]);
   const [index, setIndex] = useState<number>(0);
 
-  //   useEffect(() => {
-  //     const func = async () => {
-  // const token = getTempStorage("access_token");
-  // const secret = getTempStorage("access_secret");
+  useEffect(() => {
+    const func = async () => {
+      const token = getTempStorage("access_token");
+      const secret = getTempStorage("access_secret");
 
-  // if (token && secret && user.screen_name) {
-  //         const data = await getMutuals(token, secret, user.screen_name);
-  //         if (data) {
-  //           setMatches(data.intersect);
-  //         }
-  //       }
-  //     };
+      if (token && secret && user.screen_name) {
+        const data = await getMutuals(token, secret, user.screen_name);
+        if (data) {
+          setMatches(data.intersect);
+        }
+      }
+    };
 
-  //     func();
-  //   }, []);
+    func();
+  }, []);
 
   if (mutuals.length > 0) {
     return (

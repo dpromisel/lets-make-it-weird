@@ -5,6 +5,8 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import AuthProvider from "./providers/AuthProvider";
 import { QueryClientProvider, QueryClient } from "react-query";
+import LogRocket from "logrocket";
+LogRocket.init("product-studio/lets-make-it-weird");
 
 const queryClient = new QueryClient();
 

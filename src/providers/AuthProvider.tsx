@@ -1,8 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import axios from "axios";
 import { getTempStorage } from "../util";
 import { getAccessCredentials, getUserData, TwitterUser } from "../TwitterAuth";
+import LogRocket from "logrocket";
 
 type ContextProps = {
   children: React.ReactNode;
@@ -36,6 +35,9 @@ const AuthProvider = ({ children }: ContextProps) => {
     if (token && secret && userId) {
       const userData = await getUserData(token, secret, userId);
       if (userData) {
+        LogRocket.identify(userData.id_str, {
+          screen_name: userData.screen_name,
+        });
         setUser(userData);
       }
     }

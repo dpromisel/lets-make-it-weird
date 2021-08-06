@@ -1,32 +1,44 @@
-import { Button, Grid } from "@material-ui/core";
+import { Button, CircularProgress, Grid } from "@material-ui/core";
 import React, { useContext, useEffect, useState } from "react";
+import { useMutation, useQuery } from "react-query";
 import MutualProfile from "./MutualProfile";
 import { AuthContext } from "./providers/AuthProvider";
-import { getMutuals } from "./TwitterAuth";
+import { getMutuals, userSwipe } from "./TwitterAuth";
 import { getTempStorage } from "./util";
+import { useQueryClient } from "react-query";
+import { Link } from "react-router-dom";
 
 function Match() {
   const { user } = useContext(AuthContext);
-  const [mutuals, setMutuals] = useState<number[]>([]);
   const [index, setIndex] = useState<number>(0);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const func = async () => {
+  const { data } = useQuery("match", async () => {
+    const token = getTempStorage("access_token");
+    const secret = getTempStorage("access_secret");
+
+    if (token && secret && user.screen_name) {
+      return await getMutuals(token, secret, user.screen_name);
+    }
+  });
+
+  const swipe = useMutation(
+    async (action: "like" | "dislike") => {
       const token = getTempStorage("access_token");
       const secret = getTempStorage("access_secret");
 
-      if (token && secret && user.screen_name) {
-        const data = await getMutuals(token, secret, user.screen_name);
-        if (data) {
-          setMutuals(data.intersect);
-        }
+      if (token && secret) {
+        await userSwipe(token, secret, data.unswiped[index].toString(), action);
       }
-    };
+    },
+    {
+      onSettled: () => {
+        queryClient.invalidateQueries("match");
+      },
+    }
+  );
 
-    func();
-  }, []);
-
-  if (mutuals.length > 0) {
+  if (data && data?.unswiped.length > 0) {
     return (
       <Grid
         direction="column"
@@ -37,10 +49,15 @@ function Match() {
         style={{ height: "100vh" }}
       >
         <Grid item>
+          <Link to="/likes">{data?.likes.length} Likes</Link> <br />
+          <Link to="/dislikes">{data?.dislikes.length} Dislikes</Link>
+        </Grid>
+
+        <Grid item>
           <MutualProfile
-            userId={mutuals[index].toString()}
+            userId={data.unswiped[index].toString()}
             onFail={() => {
-              if (index < mutuals.length - 1) {
+              if (index < data.unswiped.length - 1) {
                 setIndex(index + 1);
               } else if (index > 0) {
                 setIndex(index - 1);
@@ -59,26 +76,21 @@ function Match() {
           spacing={4}
         >
           <Grid item>
-            <Button
-              variant="contained"
-              onClick={() => {
-                if (index > 0) setIndex(index - 1);
-              }}
-            >
-              Previous
+            <Button variant="contained" onClick={() => swipe.mutate("dislike")}>
+              No Thanks!
             </Button>
           </Grid>
           <Grid item>
-            <Button
-              variant="contained"
-              onClick={() => {
-                if (index < mutuals.length - 1) setIndex(index + 1);
-              }}
-            >
-              Next
+            <Button variant="contained" onClick={() => swipe.mutate("like")}>
+              Like
             </Button>
           </Grid>
         </Grid>
+        {swipe.isLoading && (
+          <Grid item>
+            <CircularProgress />
+          </Grid>
+        )}
       </Grid>
     );
   } else {

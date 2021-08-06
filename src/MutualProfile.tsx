@@ -10,6 +10,7 @@ import {
   Grid,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import { useNavigate } from "react-router";
 import { getUserData, TwitterUser } from "./TwitterAuth";
 import UserCard from "./UserCard";
@@ -22,27 +23,24 @@ function MutualProfile({
   userId: string;
   onFail: () => void;
 }) {
-  const [user, setUser] = useState(null);
+  const { data } = useQuery(["profile", userId], async () => {
+    if (userId) {
+      const token = getTempStorage("access_token");
+      const secret = getTempStorage("access_secret");
 
-  useEffect(() => {
-    const func = async () => {
-      if (userId) {
-        const token = getTempStorage("access_token");
-        const secret = getTempStorage("access_secret");
-
-        if (token && secret) {
-          const data = await getUserData(token, secret, userId);
-          if (data) {
-            setUser(data);
-          } else {
-            onFail();
-          }
+      if (token && secret) {
+        const data = await getUserData(token, secret, userId);
+        if (data) {
+          return data;
+        } else {
+          onFail();
         }
       }
-    };
-    func();
-  }, [userId]);
-  return <UserCard user={user} />;
+    }
+  });
+
+  if (data) return <UserCard user={data} />;
+  else return null;
 }
 
 export default MutualProfile;

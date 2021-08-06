@@ -76,7 +76,24 @@ export const getMutuals = async (
 ) => {
   try {
     const resp = await axios.get(
-      `${backendEndpoint}mutuals?&access_token=${access_token}&access_secret=${access_token_secret}&screen_name=${screen_name}`
+      `${backendEndpoint}mutuals?access_token=${access_token}&access_secret=${access_token_secret}&screen_name=${screen_name}`
+    );
+
+    return resp.data;
+  } catch (e) {
+    console.log("Failed getting user data:", e);
+  }
+};
+
+export const userSwipe = async (
+  access_token: string,
+  access_token_secret: string,
+  target_id: string,
+  swipe: "like" | "dislike"
+) => {
+  try {
+    const resp = await axios.get(
+      `${backendEndpoint}swipe?access_token=${access_token}&access_secret=${access_token_secret}&target_id=${target_id}&swipe=${swipe}`
     );
 
     return resp.data;

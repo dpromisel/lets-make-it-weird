@@ -1,7 +1,14 @@
 import React, { createContext, useEffect, useState } from "react";
-import { getTempStorage } from "../util";
-import { getAccessCredentials, getUserData, TwitterUser } from "../TwitterAuth";
+import { getTempStorage, setTempStorage } from "../util";
+import {
+  checkIfShared,
+  getAccessCredentials,
+  getUserData,
+  Tweet,
+  TwitterUser,
+} from "../Twitter";
 import LogRocket from "logrocket";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 type ContextProps = {
   children: React.ReactNode;
@@ -9,10 +16,12 @@ type ContextProps = {
 
 export const AuthContext = createContext<{
   user: TwitterUser;
-  loading: boolean;
+  tweets: Tweet[];
+  hasShared: boolean;
 }>({
   user: null,
-  loading: true,
+  tweets: [],
+  hasShared: false,
 });
 
 const oauth_token = new URLSearchParams(window.location.search).get(
@@ -24,32 +33,80 @@ const oauth_verifier = new URLSearchParams(window.location.search).get(
 
 const AuthProvider = ({ children }: ContextProps) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [tweets, setTweets] = useState([]);
+  const [hasShared, setHasShared] = useState(true);
+  const qc = useQueryClient();
 
-  const getUserWithStorage = async () => {
-    setLoading(true);
+  const { refetch } = useQuery("user", async () => {
     const token = getTempStorage("access_token");
     const secret = getTempStorage("access_secret");
     const userId = getTempStorage("user_id");
 
     if (token && secret && userId) {
-      const userData = await getUserData(token, secret, userId);
-      if (userData) {
-        LogRocket.identify(userData.id_str, {
-          screen_name: userData.screen_name,
+      const { tweets, user, hasShared } = await getUserData(
+        token,
+        secret,
+        userId
+      );
+      if (user) {
+        LogRocket.identify(user.id_str, {
+          screen_name: user.screen_name,
         });
-        setUser(userData);
+        setUser(user);
+        setHasShared(hasShared);
+        if (tweets) {
+          setTweets(tweets);
+        }
       }
     }
+  });
 
-    setLoading(false);
-  };
+  console.log(user);
+
+  // const getUserWithStorage = async () => {
+  //   setLoading(true);
+  //   const token = getTempStorage("access_token");
+  //   const secret = getTempStorage("access_secret");
+  //   const userId = getTempStorage("user_id");
+
+  //   if (token && secret && userId) {
+  //     const { tweets, user, hasShared } = await getUserData(
+  //       token,
+  //       secret,
+  //       userId
+  //     );
+  //     if (user) {
+  //       LogRocket.identify(user.id_str, {
+  //         screen_name: user.screen_name,
+  //       });
+  //       setUser(user);
+  //       setHasShared(hasShared);
+  //       if (tweets) {
+  //         setTweets(tweets);
+  //       }
+  //     }
+  //   }
+
+  //   setLoading(false);
+  // };
+
+  // useQuery(
+  //   ["shared"],
+  //   async () => {
+  //     const token = getTempStorage("access_token");
+  //     const secret = getTempStorage("access_secret");
+
+  //     if (token && secret) {
+  //       const shared = await checkIfShared(token, secret);
+  //       setHasShared(shared);
+  //     }
+  //   },
+  //   { enabled: hasShared === false }
+  // );
 
   useEffect(() => {
     const func = async () => {
       if (oauth_token && oauth_verifier) {
-        setLoading(true);
-
         window.history.pushState({}, null, "/");
         const secret = getTempStorage("twitter_secret");
         if (secret) {
@@ -60,22 +117,17 @@ const AuthProvider = ({ children }: ContextProps) => {
           );
 
           if (ac) {
-            await getUserWithStorage();
+            await refetch();
           }
         }
-        setLoading(false);
       }
     };
 
     func();
   }, [oauth_token, oauth_verifier]);
 
-  useEffect(() => {
-    getUserWithStorage();
-  }, []);
-
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, tweets, hasShared }}>
       {children}
     </AuthContext.Provider>
   );

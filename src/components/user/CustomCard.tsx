@@ -158,11 +158,11 @@ const UserCard = ({ user, tweets }: { user: TwitterUser; tweets: Tweet[] }) => {
           </Row>
         </Box>
       </Box>
-      {tweets.length > 0 && (
+      {/* {tweets.length > 0 && (
         <Box p={2}>
           <TwitterTweetEmbed tweetId={tweets[0].id_str} />
         </Box>
-      )}
+      )} */}
     </>
   );
 };

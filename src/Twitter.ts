@@ -60,13 +60,40 @@ export const getUserData = async (
 ) => {
   try {
     const resp2 = await axios.get(
-      `${backendEndpoint}auth?type=user_data&access_token=${access_token}&access_secret=${access_token_secret}&userId=${user_id}&redirect_uri=${twitRedirectUri}`
+      `${backendEndpoint}user?access_token=${access_token}&access_secret=${access_token_secret}&user_id=${user_id}`
     );
 
-    return resp2.data.data as TwitterUser;
+    if (resp2.data.user && resp2.data.tweets)
+      return {
+        user: resp2.data.user,
+        tweets: resp2.data.tweets,
+        hasShared: resp2.data.hasShared,
+      } as {
+        user: TwitterUser;
+        tweets: Tweet[];
+        hasShared: boolean;
+      };
+    else return { user: null, tweets: [], hasShared: false };
   } catch (e) {
     console.log("Failed getting user data:", e);
   }
+  return { user: null, tweets: [], hasShared: false };
+};
+
+export const checkIfShared = async (
+  access_token: string,
+  access_token_secret: string
+) => {
+  try {
+    const resp2 = await axios.get(
+      `${backendEndpoint}share?access_token=${access_token}&access_secret=${access_token_secret}`
+    );
+
+    return resp2.data.shared as boolean;
+  } catch (e) {
+    console.log("Failed getting user data:", e);
+  }
+  return false;
 };
 
 export const getMutuals = async (
@@ -251,4 +278,213 @@ export interface TwitterUser {
   withheld_in_countries: any[];
   suspended: boolean;
   needs_phone_verification: boolean;
+}
+
+export interface UserMention {
+  screen_name: string;
+  name: string;
+  id: number;
+  id_str: string;
+  indices: number[];
+}
+
+export interface Url {
+  url: string;
+  expanded_url: string;
+  display_url: string;
+  indices: number[];
+}
+
+export interface Medium2 {
+  w: number;
+  h: number;
+  resize: string;
+}
+
+export interface Thumb {
+  w: number;
+  h: number;
+  resize: string;
+}
+
+export interface Small {
+  w: number;
+  h: number;
+  resize: string;
+}
+
+export interface Large {
+  w: number;
+  h: number;
+  resize: string;
+}
+
+export interface Sizes {
+  medium: Medium2;
+  thumb: Thumb;
+  small: Small;
+  large: Large;
+}
+
+export interface Medium {
+  id: number;
+  id_str: string;
+  indices: number[];
+  media_url: string;
+  media_url_https: string;
+  url: string;
+  display_url: string;
+  expanded_url: string;
+  type: string;
+  sizes: Sizes;
+}
+
+export interface Entities {
+  hashtags: any[];
+  symbols: any[];
+  user_mentions: UserMention[];
+  urls: Url[];
+  media: Medium[];
+}
+
+export interface Url3 {
+  url: string;
+  expanded_url: string;
+  display_url: string;
+  indices: number[];
+}
+
+export interface Url2 {
+  urls: Url3[];
+}
+
+export interface Description {
+  urls: any[];
+}
+
+export interface Entities2 {
+  url: Url2;
+  description: Description;
+}
+
+export interface User {
+  id: number;
+  id_str: string;
+  name: string;
+  screen_name: string;
+  location: string;
+  description: string;
+  url: string;
+  entities: Entities2;
+  protected: boolean;
+  followers_count: number;
+  friends_count: number;
+  listed_count: number;
+  created_at: string;
+  favourites_count: number;
+  utc_offset?: any;
+  time_zone?: any;
+  geo_enabled: boolean;
+  verified: boolean;
+  statuses_count: number;
+  lang?: any;
+  contributors_enabled: boolean;
+  is_translator: boolean;
+  is_translation_enabled: boolean;
+  profile_background_color: string;
+  profile_background_image_url: string;
+  profile_background_image_url_https: string;
+  profile_background_tile: boolean;
+  profile_image_url: string;
+  profile_image_url_https: string;
+  profile_banner_url: string;
+  profile_link_color: string;
+  profile_sidebar_border_color: string;
+  profile_sidebar_fill_color: string;
+  profile_text_color: string;
+  profile_use_background_image: boolean;
+  has_extended_profile: boolean;
+  default_profile: boolean;
+  default_profile_image: boolean;
+  following: boolean;
+  follow_request_sent: boolean;
+  notifications: boolean;
+  translator_type: string;
+  withheld_in_countries: any[];
+}
+
+export interface Medium4 {
+  w: number;
+  h: number;
+  resize: string;
+}
+
+export interface Thumb2 {
+  w: number;
+  h: number;
+  resize: string;
+}
+
+export interface Small2 {
+  w: number;
+  h: number;
+  resize: string;
+}
+
+export interface Large2 {
+  w: number;
+  h: number;
+  resize: string;
+}
+
+export interface Sizes2 {
+  medium: Medium4;
+  thumb: Thumb2;
+  small: Small2;
+  large: Large2;
+}
+
+export interface Medium3 {
+  id: any;
+  id_str: string;
+  indices: number[];
+  media_url: string;
+  media_url_https: string;
+  url: string;
+  display_url: string;
+  expanded_url: string;
+  type: string;
+  sizes: Sizes2;
+}
+
+export interface ExtendedEntities {
+  media: Medium3[];
+}
+
+export interface Tweet {
+  created_at: string;
+  id: any;
+  id_str: string;
+  text: string;
+  truncated: boolean;
+  entities: Entities;
+  source: string;
+  in_reply_to_status_id?: number;
+  in_reply_to_status_id_str: string;
+  in_reply_to_user_id?: number;
+  in_reply_to_user_id_str: string;
+  in_reply_to_screen_name: string;
+  user: User;
+  geo?: any;
+  coordinates?: any;
+  place?: any;
+  contributors?: any;
+  is_quote_status: boolean;
+  retweet_count: number;
+  favorite_count: number;
+  favorited: boolean;
+  retweeted: boolean;
+  lang: string;
+  possibly_sensitive?: boolean;
+  extended_entities: ExtendedEntities;
 }

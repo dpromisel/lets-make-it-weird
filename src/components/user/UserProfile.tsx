@@ -1,20 +1,12 @@
-import {
-  Card,
-  CardActionArea,
-  CardMedia,
-  CardContent,
-  Typography,
-  CardActions,
-  Button,
-  makeStyles,
-  Grid,
-} from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { TwitterUser } from "./TwitterAuth";
+import { Tweet, TwitterUser } from "../../Twitter";
 import UserCard from "./UserCard";
+import Background from "./background.png";
+import CustomCard from "./CustomCard";
 
-function UserProfile({ user }: { user: TwitterUser }) {
+function UserProfile({ user, tweets }: { user: TwitterUser; tweets: Tweet[] }) {
   const navigate = useNavigate();
   return (
     <Grid
@@ -23,10 +15,13 @@ function UserProfile({ user }: { user: TwitterUser }) {
       spacing={4}
       justifyContent="center"
       alignItems="center"
-      style={{ height: "100vh" }}
+      style={{
+        height: "100vh",
+      }}
     >
       <Grid item>
-        <UserCard user={user} />
+        {/* <UserCard user={user} /> */}
+        <CustomCard user={user} tweets={tweets} />
       </Grid>
       <Grid item>
         <Button

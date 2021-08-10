@@ -6,6 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import AuthProvider from "./providers/AuthProvider";
 import { QueryClientProvider, QueryClient } from "react-query";
 import LogRocket from "logrocket";
+import { ReactQueryDevtools } from "react-query/devtools";
 LogRocket.init("product-studio/lets-make-it-weird");
 
 const queryClient = new QueryClient();
@@ -16,6 +17,7 @@ ReactDOM.render(
       <AuthProvider>
         <App />
       </AuthProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </React.StrictMode>,
   document.getElementById("root")

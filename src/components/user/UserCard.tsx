@@ -9,7 +9,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import { TwitterUser } from "./TwitterAuth";
+import { TwitterUser } from "../../Twitter";
 // @ts-ignore
 import ResizeImage from "react-resize-image";
 // @ts-ignore
@@ -65,9 +65,11 @@ function UserCard({ user }: { user: TwitterUser }) {
         <Typography gutterBottom variant="h5" component="h2">
           {user.name}
         </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
-          @{user.screen_name}
-        </Typography>
+        <a href={`https://twitter.com/${user.screen_name}`} target="_blank">
+          <Typography variant="body2" color="textSecondary" component="p">
+            @{user.screen_name}
+          </Typography>
+        </a>
         <Typography variant="body2" component="p">
           {user.description}
         </Typography>

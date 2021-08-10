@@ -3,15 +3,16 @@ import React, { useContext } from "react";
 import { useIsFetching } from "react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
-import Dislikes from "./Dislikes";
-import Likes from "./Likes";
-import Login from "./Login";
-import Match from "./Match";
+import Dislikes from "./components/Dislikes";
+import Likes from "./components/Likes";
+import Login from "./components/Login";
+import Match from "./components/Match";
 import { AuthContext } from "./providers/AuthProvider";
-import UserProfile from "./UserProfile";
+import UserProfile from "./components/user/UserProfile";
+import Share from "./components/Share";
 
 function App() {
-  const { user, loading } = useContext(AuthContext);
+  const { user, tweets } = useContext(AuthContext);
   const isLoading = useIsFetching();
   return (
     <BrowserRouter>
@@ -21,13 +22,7 @@ function App() {
           path="/"
           element={
             <div className="app">
-              {loading ? (
-                <div> Loading.... </div>
-              ) : user ? (
-                <UserProfile user={user} />
-              ) : (
-                <Login />
-              )}
+              {user ? <UserProfile user={user} tweets={tweets} /> : <Login />}
             </div>
           }
         />
@@ -42,6 +37,10 @@ function App() {
         <Route
           path="/dislikes"
           element={<div className="app">{user ? <Dislikes /> : <Login />}</div>}
+        />
+        <Route
+          path="/share"
+          element={<div className="app">{user ? <Share /> : <Login />}</div>}
         />
       </Routes>
     </BrowserRouter>

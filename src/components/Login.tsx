@@ -1,14 +1,11 @@
 import { Button } from "@material-ui/core";
-import { login } from "./TwitterAuth";
-import Background from "./background.png";
-import "./App.css";
+import { login } from "../Twitter";
+import "../App.css";
+import Background from "./Background";
 
 function AuthTwitter() {
   return (
-    <div
-      className="App"
-      style={{ backgroundImage: `url(${Background})`, backgroundSize: "cover" }}
-    >
+    <Background>
       <header className="App-header">
         <h1>let's makie it weird.</h1>
         <h2>swipe right on your twitter mutuals.</h2>
@@ -20,7 +17,7 @@ function AuthTwitter() {
           authenticate twitter
         </Button>
       </header>
-    </div>
+    </Background>
   );
 }
 

@@ -2,9 +2,9 @@ import { Button, CircularProgress, Grid } from "@material-ui/core";
 import React, { useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import MutualProfile from "./MutualProfile";
-import { AuthContext } from "./providers/AuthProvider";
-import { getMutuals } from "./TwitterAuth";
-import { getTempStorage } from "./util";
+import { AuthContext } from "../providers/AuthProvider";
+import { getMutuals } from "../Twitter";
+import { getTempStorage } from "../util";
 import { Link } from "react-router-dom";
 
 function Likes() {

@@ -12,7 +12,7 @@ function UserPreview({ user }: { user: TwitterUser }) {
       <Grid
         direction="column"
         container
-        spacing={4}
+        // spacing={4}
         justifyContent="center"
         alignItems="center"
         style={{
@@ -34,7 +34,16 @@ function UserPreview({ user }: { user: TwitterUser }) {
               <span style={{ color: "#1DA1F2" }}>. </span>
             </p>
           </Grid>
-          <Grid item xs={12} md={6} direction="column" container spacing={3}>
+          <Grid
+            item
+            xs={12}
+            md={6}
+            direction="column"
+            container
+            spacing={3}
+            justifyContent="center"
+            alignItems="center"
+          >
             <Grid item>
               <CustomCard user={user} />
             </Grid>

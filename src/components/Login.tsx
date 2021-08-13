@@ -13,7 +13,7 @@ function AuthTwitter() {
         container
         direction="column"
         style={{ height: "100vh", backgroundColor: "black" }}
-        spacing={4}
+        // spacing={4}
         justifyContent="center"
         alignItems="center"
       >

@@ -39,7 +39,7 @@ const useStyles = makeStyles(({ palette }) => ({
   root: {
     position: "relative",
     // borderRadius: "1rem",
-    minWidth: 400,
+    minWidth: 500,
     "&:before": {
       transition: "0.2s",
       position: "absolute",
@@ -94,20 +94,28 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   logo: {
     transition: "0.3s",
-    width: 100,
+    width: 300,
     height: "auto",
     boxShadow: "0 4px 12px 0 rgba(0,0,0,0.24)",
-    borderRadius: "1rem",
+    borderRadius: "10rem",
   },
 }));
 
-const UserCard = ({ user, tweets }: { user: TwitterUser; tweets: Tweet[] }) => {
+const UserCard = ({ user }: { user: TwitterUser }) => {
   const mediaStyles = useCoverCardMediaStyles();
   const styles = useStyles({ color: "#fc7944" });
 
   if (!user) return null;
   return (
-    <>
+    <div
+      style={{
+        backgroundColor: "white",
+        borderRadius: "20px",
+        color: "black",
+        maxWidth: 500,
+      }}
+      className={cx(styles.root)}
+    >
       <GoogleFontLoader
         fonts={[{ font: "Fjalla One" }, { font: "Sen", weights: [500] }]}
       />
@@ -118,35 +126,42 @@ const UserCard = ({ user, tweets }: { user: TwitterUser; tweets: Tweet[] }) => {
           classes={mediaStyles}
         />
       </Box>
-      <Box className={styles.content} p={2} style={{ marginTop: -70 }}>
+      <Box className={styles.content} p={2} style={{ marginTop: -150 }}>
         <Box position={"relative"} zIndex={1}>
-          <Row p={0} gap={2}>
-            <Item>
+          <Row p={0} gap={2} alignItems="center">
+            <Item position="center">
               <Avatar
                 className={styles.logo}
                 src={user?.profile_image_url?.replace(/_normal\./, ".")}
               />
             </Item>
-            <Item position={"bottom"}>
-              <h2 className={styles.title}>
-                <Link
-                  style={{ color: "black" }}
-                  href={`https://twitter.com/${user.screen_name}`}
-                  target="_blank"
-                >
-                  @{user.screen_name}
-                </Link>
+          </Row>
+          <Row mt={1}>
+            <Item position="center">
+              <h2 className={styles.title} style={{ color: "black" }}>
+                {user.name}
               </h2>
             </Item>
           </Row>
-          <Row mt={4} alignItems={"center"}>
-            <Item>{user.description}</Item>
+          <Row mt={1}>
+            <Item position="center">
+              <Link
+                style={{ color: "grey" }}
+                href={`https://twitter.com/${user.screen_name}`}
+                target="_blank"
+              >
+                @{user.screen_name}
+              </Link>
+            </Item>
           </Row>
-          <Row mt={4} alignItems={"center"}>
-            <Item>
+          <Row mt={2} alignItems={"center"}>
+            <Item position="center">{user.description}</Item>
+          </Row>
+          <Row mt={2} alignItems={"center"}>
+            <Item position="center">
               {user?.entities?.url?.urls?.length &&
                 user.entities?.url.urls.map((url) => (
-                  <Item>
+                  <Item position="center">
                     {" "}
                     <Link href={url.expanded_url}>
                       {" "}
@@ -158,12 +173,7 @@ const UserCard = ({ user, tweets }: { user: TwitterUser; tweets: Tweet[] }) => {
           </Row>
         </Box>
       </Box>
-      {/* {tweets.length > 0 && (
-        <Box p={2}>
-          <TwitterTweetEmbed tweetId={tweets[0].id_str} />
-        </Box>
-      )} */}
-    </>
+    </div>
   );
 };
 

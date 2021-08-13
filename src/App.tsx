@@ -10,6 +10,7 @@ import Match from "./components/Match";
 import { AuthContext } from "./providers/AuthProvider";
 import UserProfile from "./components/user/UserProfile";
 import Share from "./components/Share";
+import UserPreview from "./components/user/UserPreview";
 
 function App() {
   const { user, tweets } = useContext(AuthContext);
@@ -22,7 +23,7 @@ function App() {
           path="/"
           element={
             <div className="app">
-              {user ? <UserProfile user={user} tweets={tweets} /> : <Login />}
+              {user ? <UserPreview user={user} /> : <Login />}
             </div>
           }
         />

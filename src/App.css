@@ -8,6 +8,16 @@
   pointer-events: none;
 }
 
+@font-face {
+  font-family: "Ginchiest";
+  src: local("Ginchiest"), url("./fonts/Ginchiest.ttf") format("truetype");
+  font-weight: bold;
+}
+
+.font-face-gm {
+  font-family: "Ginchiest";
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

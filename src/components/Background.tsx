@@ -1,6 +1,3 @@
-import { Button } from "@material-ui/core";
-import { login } from "../Twitter";
-import BackgroundPng from "../background.png";
 import "../App.css";
 
 function Background({ children }: { children: JSX.Element }) {
@@ -8,8 +5,11 @@ function Background({ children }: { children: JSX.Element }) {
     <div
       className="App"
       style={{
-        backgroundImage: `url(${BackgroundPng})`,
+        backgroundColor: "black",
         backgroundSize: "cover",
+        height: "100vh",
+        width: "100vw",
+        color: "white",
       }}
     >
       {children}

@@ -21,7 +21,7 @@ function UserProfile({ user, tweets }: { user: TwitterUser; tweets: Tweet[] }) {
     >
       <Grid item>
         {/* <UserCard user={user} /> */}
-        <CustomCard user={user} tweets={tweets} />
+        <CustomCard user={user} />
       </Grid>
       <Grid item>
         <Button

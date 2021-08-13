@@ -28,7 +28,7 @@ function MutualProfile({
     }
   });
 
-  if (data) return <UserCard user={data.user} tweets={data.tweets} />;
+  if (data) return <UserCard user={data.user} />;
   else return null;
 }
 

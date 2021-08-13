@@ -7,7 +7,10 @@ import { getMutuals, userSwipe } from "../Twitter";
 import { getTempStorage } from "../util";
 import { useQueryClient } from "react-query";
 import { Link, Navigate } from "react-router-dom";
-
+import Background from "./Background";
+import Fab from "@material-ui/core/Fab";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import ClearIcon from "@material-ui/icons/Clear";
 function Match() {
   const { user, hasShared } = useContext(AuthContext);
   const [index, setIndex] = useState<number>(0);
@@ -49,74 +52,86 @@ function Match() {
     }
   );
 
-  console.log(count);
+  console.log(count, data?.unswiped.length);
 
   if (data) {
     if (count > 10 && !hasShared) {
       return <Navigate to="/share" />;
     } else if (data?.unswiped.length > 0) {
       return (
-        <Grid
-          direction="column"
-          container
-          spacing={4}
-          justifyContent="center"
-          alignItems="center"
-          style={{ height: "100vh" }}
-        >
-          <Grid item>
-            <Link to="/likes"> Likes</Link> <br />
-            <Link to="/dislikes"> Dislikes</Link>
-          </Grid>
-
-          <Grid item>
-            <MutualProfile
-              userId={data.unswiped[index].toString()}
-              onFail={() => {
-                if (index < data.unswiped.length - 1) {
-                  setIndex(index + 1);
-                } else if (index > 0) {
-                  setIndex(index - 1);
-                }
-              }}
-            />
-          </Grid>
-
+        <Background>
           <Grid
-            item
+            direction="column"
             container
-            direction="row"
-            style={{ width: "100vw" }}
+            // spacing={2}
             justifyContent="center"
             alignItems="center"
-            spacing={4}
+            style={{ height: "100vh" }}
           >
             <Grid item>
-              <Button
-                variant="contained"
-                onClick={() => swipe.mutate("dislike")}
-              >
-                No Thanks!
-              </Button>
+              <div style={{ fontSize: "80px" }} className="font-face-gm">
+                <span style={{ color: "#FF7A00" }}>Hot </span>
+                <span style={{ color: "#F22FA5" }}>or </span>
+                <span style={{ color: "#1DA1F2" }}>Not </span>
+              </div>
             </Grid>
             <Grid item>
-              <Button variant="contained" onClick={() => swipe.mutate("like")}>
-                Like
-              </Button>
+              <MutualProfile
+                userId={data.unswiped[index].toString()}
+                onFail={() => {
+                  if (index < data.unswiped.length - 1) {
+                    setIndex(index + 1);
+                  } else if (index > 0) {
+                    setIndex(index - 1);
+                  }
+                }}
+              />
+            </Grid>
+
+            <Grid
+              item
+              container
+              direction="row"
+              style={{ width: "100vw", paddingTop: 10 }}
+              justifyContent="center"
+              alignItems="center"
+              spacing={4}
+            >
+              <Grid item>
+                <Fab
+                  aria-label="like"
+                  onClick={() => swipe.mutate("dislike")}
+                  style={{ backgroundColor: "#F229A2" }}
+                >
+                  <ClearIcon />
+                </Fab>
+              </Grid>
+              <Grid item>
+                <Fab
+                  aria-label="like"
+                  onClick={() => swipe.mutate("like")}
+                  style={{ backgroundColor: "#F229A2" }}
+                >
+                  <FavoriteIcon />
+                </Fab>
+              </Grid>
             </Grid>
           </Grid>
-          {swipe.isLoading && (
-            <Grid item>
-              <CircularProgress />
-            </Grid>
-          )}
-        </Grid>
+        </Background>
       );
     } else {
-      return <> Hmmm not seeing any mutuals... </>;
+      return (
+        <Background>
+          <> Hmmm not seeing any mutuals... </>
+        </Background>
+      );
     }
   } else {
-    return <> Loading... </>;
+    return (
+      <Background>
+        <> Loading... </>
+      </Background>
+    );
   }
 }
 

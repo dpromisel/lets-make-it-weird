@@ -6,45 +6,35 @@ import "./App.css";
 import Dislikes from "./components/Dislikes";
 import Likes from "./components/Likes";
 import Login from "./components/Login";
-import Match from "./components/Match";
 import { AuthContext } from "./providers/AuthProvider";
-import UserProfile from "./components/user/UserProfile";
 import Share from "./components/Share";
 import UserPreview from "./components/user/UserPreview";
+import Swiper from "./components/Swiper";
+import ProfileStack from "./components/ProfileStack";
 
 function App() {
-  const { user, tweets } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const isLoading = useIsFetching();
   return (
-    <BrowserRouter>
-      {isLoading !== 0 && <LinearProgress />}
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div className="app">
-              {user ? <UserPreview user={user} /> : <Login />}
-            </div>
-          }
-        />
-        <Route
-          path="/match"
-          element={<div className="app">{user ? <Match /> : <Login />}</div>}
-        />
-        <Route
-          path="/likes"
-          element={<div className="app">{user ? <Likes /> : <Login />}</div>}
-        />
-        <Route
-          path="/dislikes"
-          element={<div className="app">{user ? <Dislikes /> : <Login />}</div>}
-        />
-        <Route
-          path="/share"
-          element={<div className="app">{user ? <Share /> : <Login />}</div>}
-        />
-      </Routes>
-    </BrowserRouter>
+    <div className="app">
+      <BrowserRouter>
+        {isLoading !== 0 && <LinearProgress />}
+        <Routes>
+          <Route
+            path="/"
+            element={user ? <UserPreview user={user} /> : <Login />}
+          />
+          <Route path="/swipe" element={user ? <ProfileStack /> : <Login />} />
+          <Route
+            path="/swipe/*"
+            element={user ? <ProfileStack /> : <Login />}
+          />
+          <Route path="/likes" element={user ? <Likes /> : <Login />} />
+          <Route path="/dislikes" element={user ? <Dislikes /> : <Login />} />
+          <Route path="/share" element={user ? <Share /> : <Login />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 

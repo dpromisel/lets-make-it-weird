@@ -35,7 +35,6 @@ const AuthProvider = ({ children }: ContextProps) => {
   const [user, setUser] = useState(null);
   const [tweets, setTweets] = useState([]);
   const [hasShared, setHasShared] = useState(true);
-  const qc = useQueryClient();
 
   const { refetch } = useQuery("user", async () => {
     const token = getTempStorage("access_token");
@@ -60,49 +59,6 @@ const AuthProvider = ({ children }: ContextProps) => {
       }
     }
   });
-
-  console.log(user);
-
-  // const getUserWithStorage = async () => {
-  //   setLoading(true);
-  //   const token = getTempStorage("access_token");
-  //   const secret = getTempStorage("access_secret");
-  //   const userId = getTempStorage("user_id");
-
-  //   if (token && secret && userId) {
-  //     const { tweets, user, hasShared } = await getUserData(
-  //       token,
-  //       secret,
-  //       userId
-  //     );
-  //     if (user) {
-  //       LogRocket.identify(user.id_str, {
-  //         screen_name: user.screen_name,
-  //       });
-  //       setUser(user);
-  //       setHasShared(hasShared);
-  //       if (tweets) {
-  //         setTweets(tweets);
-  //       }
-  //     }
-  //   }
-
-  //   setLoading(false);
-  // };
-
-  // useQuery(
-  //   ["shared"],
-  //   async () => {
-  //     const token = getTempStorage("access_token");
-  //     const secret = getTempStorage("access_secret");
-
-  //     if (token && secret) {
-  //       const shared = await checkIfShared(token, secret);
-  //       setHasShared(shared);
-  //     }
-  //   },
-  //   { enabled: hasShared === false }
-  // );
 
   useEffect(() => {
     const func = async () => {

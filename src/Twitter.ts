@@ -80,6 +80,28 @@ export const getUserData = async (
   return { user: null, tweets: [], hasShared: false };
 };
 
+export const getRelationship = async (
+  access_token: string,
+  access_token_secret: string,
+  target_id: string
+) => {
+  try {
+    const resp = await axios.get(
+      `${backendEndpoint}relationship?access_token=${access_token}&access_secret=${access_token_secret}&target_id=${target_id}`
+    );
+
+    return resp.data as {
+      target: TwitterUser;
+      mutuals: boolean;
+      likesBack: boolean;
+      canDm: boolean;
+    };
+  } catch (e) {
+    console.log("Failed getting user data:", e);
+  }
+  return { target: null, mutuals: false, likesBack: false, canDm: false };
+};
+
 export const checkIfShared = async (
   access_token: string,
   access_token_secret: string

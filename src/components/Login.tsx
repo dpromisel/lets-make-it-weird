@@ -4,16 +4,22 @@ import "../App.css";
 import Background from "./Background";
 import HeartRight from "../heart_r.png";
 import HeartLeft from "../heart_left.png";
+import useWindowDimensions from "../useWindowDimensions";
 
 function AuthTwitter() {
+  const { width } = useWindowDimensions();
+  const breakpoint = 700;
+
   return (
     <Background>
-      {/* <header className="App-header"> */}
       <Grid
         container
         direction="column"
-        style={{ height: "100vh", backgroundColor: "black" }}
-        // spacing={4}
+        style={
+          {
+            // sheight: "100vh",
+          }
+        }
         justifyContent="center"
         alignItems="center"
       >
@@ -25,11 +31,16 @@ function AuthTwitter() {
           justifyContent="center"
           alignItems="center"
         >
+          {width > breakpoint && (
+            <Grid item>
+              <img src={HeartLeft} style={{ marginTop: "50px" }} />
+            </Grid>
+          )}
           <Grid item>
-            <img src={HeartLeft} style={{ marginTop: "50px" }} />
-          </Grid>
-          <Grid item>
-            <p style={{ fontSize: "80px" }} className="font-face-gm">
+            <p
+              style={{ fontSize: "80px", lineHeight: "80px" }}
+              className="font-face-gm"
+            >
               <span style={{ color: "#FFE600" }}>Let's </span>
               <span style={{ color: "#FF7A00" }}>make </span>
               <span style={{ color: "#C2F743" }}>it </span>
@@ -37,13 +48,22 @@ function AuthTwitter() {
               <span style={{ color: "#1DA1F2" }}>.</span>
             </p>
           </Grid>
-          <Grid item>
-            <img src={HeartRight} style={{ marginTop: "50px" }} />
-          </Grid>
+          {width > breakpoint && (
+            <Grid item>
+              <img src={HeartRight} style={{ marginTop: "50px" }} />
+            </Grid>
+          )}
         </Grid>
 
         <Grid item>
-          <h2 style={{ color: "white", fontSize: "25px", marginTop: "-100px" }}>
+          <h2
+            style={{
+              color: "white",
+              fontSize: "25px",
+              marginTop: "-100px",
+              padding: 80,
+            }}
+          >
             {" "}
             Hot or not for your{" "}
             <span style={{ color: "#1DA1F2" }}> Twitter </span> mutuals.

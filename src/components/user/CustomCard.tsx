@@ -15,6 +15,7 @@ import { Link } from "@material-ui/core";
 import { Tweet, TwitterUser } from "../../Twitter";
 // @ts-ignore
 import { TwitterTweetEmbed } from "react-twitter-embed";
+import useWindowDimensions from "../../useWindowDimensions";
 
 const useGridStyles = makeStyles(({ breakpoints }) => ({
   root: {
@@ -39,7 +40,6 @@ const useStyles = makeStyles(({ palette }) => ({
   root: {
     position: "relative",
     // borderRadius: "1rem",
-    minWidth: 500,
     "&:before": {
       transition: "0.2s",
       position: "absolute",
@@ -104,6 +104,9 @@ const useStyles = makeStyles(({ palette }) => ({
 const UserCard = ({ user }: { user: TwitterUser }) => {
   const mediaStyles = useCoverCardMediaStyles();
   const styles = useStyles({ color: "#fc7944" });
+  const breakpoint = 700;
+
+  const { width } = useWindowDimensions();
 
   if (!user) return null;
   return (
@@ -112,7 +115,8 @@ const UserCard = ({ user }: { user: TwitterUser }) => {
         backgroundColor: "white",
         borderRadius: "20px",
         color: "black",
-        maxWidth: 500,
+        maxWidth: width,
+        minWidth: width > breakpoint ? 500 : 100,
       }}
       className={cx(styles.root)}
     >
@@ -161,7 +165,7 @@ const UserCard = ({ user }: { user: TwitterUser }) => {
             <Item position="center">
               {user?.entities?.url?.urls?.length &&
                 user.entities?.url.urls.map((url) => (
-                  <Item position="center">
+                  <Item position="center" key={url.expanded_url}>
                     {" "}
                     <Link href={url.expanded_url}>
                       {" "}

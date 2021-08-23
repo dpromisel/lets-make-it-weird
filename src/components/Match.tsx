@@ -1,138 +1,172 @@
-import { Button, CircularProgress, Grid } from "@material-ui/core";
-import React, { useContext, useEffect, useState } from "react";
-import { useMutation, useQuery } from "react-query";
-import MutualProfile from "./MutualProfile";
+import { Avatar, Button, Grid } from "@material-ui/core";
+import { useContext } from "react";
 import { AuthContext } from "../providers/AuthProvider";
-import { getMutuals, userSwipe } from "../Twitter";
-import { getTempStorage } from "../util";
-import { useQueryClient } from "react-query";
-import { Link, Navigate } from "react-router-dom";
+import { TwitterUser } from "../Twitter";
 import Background from "./Background";
-import Fab from "@material-ui/core/Fab";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import ClearIcon from "@material-ui/icons/Clear";
-function Match() {
-  const { user, hasShared } = useContext(AuthContext);
-  const [index, setIndex] = useState<number>(0);
-  const [count, setCount] = useState<number>(0);
-  const queryClient = useQueryClient();
+import HeartRight from "../heart_r.png";
+import HeartLeft from "../heart_left.png";
+import useWindowDimensions from "../useWindowDimensions";
+import { Navigate, useNavigate } from "react-router";
 
-  const { data } = useQuery(
-    "match",
-    async () => {
-      const token = getTempStorage("access_token");
-      const secret = getTempStorage("access_secret");
+function Match({ match, moveOn }: { match: TwitterUser; moveOn: () => void }) {
+  const { width } = useWindowDimensions();
+  const breakpoint = 700;
 
-      if (token && secret && user.screen_name) {
-        return await getMutuals(token, secret, user.screen_name);
-      }
-    },
-    { onSuccess: (d) => setCount(d.likes.length + d.dislikes.length) }
-  );
+  if (match)
+    if (width > breakpoint) {
+      return <DesktopMatch match={match} moveOn={moveOn} />;
+    } else return <MobileMatch match={match} moveOn={moveOn} />;
+  else return <Navigate to="/swipe" />;
+}
 
-  const swipe = useMutation(
-    async (action: "like" | "dislike") => {
-      const token = getTempStorage("access_token");
-      const secret = getTempStorage("access_secret");
-
-      if (token && secret) {
-        await userSwipe(token, secret, data.unswiped[index].toString(), action);
-      }
-    },
-    {
-      onSettled: () => {
-        // queryClient.invalidateQueries("match");
-        if (index < data.unswiped.length - 1) {
-          setIndex(index + 1);
-        } else if (index > 0) {
-          setIndex(index - 1);
-        }
-        setCount(count + 1);
-      },
-    }
-  );
-
-  console.log(count, data?.unswiped.length);
-
-  if (data) {
-    if (count > 10 && !hasShared) {
-      return <Navigate to="/share" />;
-    } else if (data?.unswiped.length > 0) {
-      return (
-        <Background>
-          <Grid
-            direction="column"
-            container
-            // spacing={2}
-            justifyContent="center"
-            alignItems="center"
-            style={{ height: "100vh" }}
+function DesktopMatch({
+  match,
+  moveOn,
+}: {
+  match: TwitterUser;
+  moveOn: () => void;
+}) {
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+  return (
+    <Background>
+      <Grid
+        container
+        direction="column"
+        justifyContent="center"
+        style={{ height: "100%" }}
+      >
+        <Grid item>
+          {" "}
+          <p
+            style={{ fontSize: "80px", lineHeight: "80px" }}
+            className="font-face-gm"
           >
-            <Grid item>
-              <div style={{ fontSize: "80px" }} className="font-face-gm">
-                <span style={{ color: "#FF7A00" }}>Hot </span>
-                <span style={{ color: "#F22FA5" }}>or </span>
-                <span style={{ color: "#1DA1F2" }}>Not </span>
-              </div>
-            </Grid>
-            <Grid item>
-              <MutualProfile
-                userId={data.unswiped[index].toString()}
-                onFail={() => {
-                  if (index < data.unswiped.length - 1) {
-                    setIndex(index + 1);
-                  } else if (index > 0) {
-                    setIndex(index - 1);
-                  }
-                }}
-              />
-            </Grid>
-
-            <Grid
-              item
-              container
-              direction="row"
-              style={{ width: "100vw", paddingTop: 10 }}
-              justifyContent="center"
-              alignItems="center"
-              spacing={4}
-            >
-              <Grid item>
-                <Fab
-                  aria-label="like"
-                  onClick={() => swipe.mutate("dislike")}
-                  style={{ backgroundColor: "#F229A2" }}
-                >
-                  <ClearIcon />
-                </Fab>
-              </Grid>
-              <Grid item>
-                <Fab
-                  aria-label="like"
-                  onClick={() => swipe.mutate("like")}
-                  style={{ backgroundColor: "#F229A2" }}
-                >
-                  <FavoriteIcon />
-                </Fab>
-              </Grid>
-            </Grid>
+            <span style={{ color: "#FFE600" }}>It's </span>
+            <span style={{ color: "#FF7A00" }}>a </span>
+            <span style={{ color: "#F22FA5" }}>match</span>
+            <span style={{ color: "#1DA1F2" }}>!</span>
+          </p>
+        </Grid>
+        <Grid item direction="row" container justifyContent="center">
+          <Grid item>
+            <img src={HeartLeft} style={{ marginTop: "50px" }} />
           </Grid>
-        </Background>
-      );
-    } else {
-      return (
-        <Background>
-          <> Hmmm not seeing any mutuals... </>
-        </Background>
-      );
-    }
-  } else {
-    return (
-      <Background>
-        <> Loading... </>
-      </Background>
-    );
-  }
+          <Grid item>
+            <Avatar
+              src={user.profile_image_url.replace(/_normal\./, ".")}
+              style={{ height: "30vh", width: "auto" }}
+            />
+          </Grid>
+          <Grid item>
+            {" "}
+            <Avatar
+              src={match.profile_image_url.replace(/_normal\./, ".")}
+              style={{ height: "30vh", width: "auto" }}
+            />
+          </Grid>
+          <Grid item>
+            <img src={HeartRight} style={{ marginTop: "50px" }} />
+          </Grid>
+        </Grid>
+        <Grid item>
+          {" "}
+          <h1> Lmao. Check Your DMs. </h1>{" "}
+        </Grid>
+        <Grid item>
+          {" "}
+          <Button
+            variant="contained"
+            onClick={() => {
+              moveOn();
+              navigate("/swipe");
+            }}
+            style={{
+              backgroundColor: "#1DA1F2",
+              color: "white",
+              textTransform: "none",
+              marginTop: 20,
+            }}
+          >
+            Keep Swipin'
+          </Button>
+        </Grid>
+      </Grid>
+    </Background>
+  );
+}
+
+function MobileMatch({
+  match,
+  moveOn,
+}: {
+  match: TwitterUser;
+  moveOn: () => void;
+}) {
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  return (
+    <Background>
+      <Grid
+        container
+        direction="column"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Grid item>
+          {" "}
+          <p
+            style={{ fontSize: "60px", lineHeight: "10px" }}
+            className="font-face-gm"
+          >
+            <span style={{ color: "#FFE600" }}>It's </span>
+            <span style={{ color: "#FF7A00" }}>a </span>
+            <span style={{ color: "#F22FA5" }}>match</span>
+            <span style={{ color: "#1DA1F2" }}>!</span>
+          </p>
+        </Grid>
+
+        <Grid item>
+          <Avatar
+            src={user.profile_image_url.replace(/_normal\./, ".")}
+            style={{ height: "auto", width: "50vw" }}
+          />
+        </Grid>
+        <Grid item>
+          {" "}
+          <Avatar
+            src={match.profile_image_url.replace(/_normal\./, ".")}
+            style={{ height: "auto", width: "50vw" }}
+          />
+        </Grid>
+
+        <Grid item>
+          {" "}
+          <h1> Lmao. Check Your DMs. </h1>{" "}
+        </Grid>
+
+        <Grid item>
+          {" "}
+          <Button
+            variant="contained"
+            onClick={() => {
+              moveOn();
+              navigate("/swipe");
+            }}
+            style={{
+              backgroundColor: "#1DA1F2",
+              color: "white",
+              textTransform: "none",
+              marginTop: 20,
+            }}
+          >
+            Keep swipin'
+          </Button>
+        </Grid>
+      </Grid>
+    </Background>
+  );
 }
 
 export default Match;

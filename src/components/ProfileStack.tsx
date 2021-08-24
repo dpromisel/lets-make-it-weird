@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import MutualProfile from "./MutualProfile";
 import { AuthContext } from "../providers/AuthProvider";
-import { getMutuals, userSwipe } from "../Twitter";
+import { getMutuals } from "../Twitter";
 import { getTempStorage } from "../util";
 import { Navigate } from "react-router-dom";
 import Background from "./Background";
@@ -27,6 +27,8 @@ function ProfileStack() {
       onSuccess: (d) => {
         if (d) setCount(d.likes.length + d.dislikes.length);
       },
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
     }
   );
 

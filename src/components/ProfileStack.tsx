@@ -13,7 +13,7 @@ function ProfileStack() {
   const { user, hasShared } = useContext(AuthContext);
   const [count, setCount] = useState<number>(0);
 
-  const { data } = useQuery(
+  const { data, refetch, isLoading } = useQuery(
     "match",
     async () => {
       const token = getTempStorage("access_token");
@@ -32,13 +32,32 @@ function ProfileStack() {
     }
   );
 
+  console.log(user, hasShared, count);
+
+  if (isLoading) {
+    return (
+      <Background>
+        <Grid
+          container
+          item
+          direction="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          {" "}
+          Loading your stack...{" "}
+        </Grid>
+      </Background>
+    );
+  }
   if (data) {
     if (count > 10 && !hasShared) {
       return <Navigate to="/share" />;
     } else if (data?.unswiped.length > 0) {
       return (
         <Swiper
-          profileIds={data.unswiped}
+          profiles={data.relationships}
+          fetchMore={refetch}
           swipes={data.likes.length + data.dislikes.length}
         />
       );

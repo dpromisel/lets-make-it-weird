@@ -8,6 +8,7 @@ import { getTempStorage } from "../util";
 import { Navigate } from "react-router-dom";
 import Background from "./Background";
 import Swiper from "./Swiper";
+import { HeartSpinner } from "react-spinners-kit";
 
 function ProfileStack() {
   const { user, hasShared } = useContext(AuthContext);
@@ -32,8 +33,6 @@ function ProfileStack() {
     }
   );
 
-  console.log(user, hasShared, count);
-
   if (isLoading) {
     return (
       <Background>
@@ -43,9 +42,11 @@ function ProfileStack() {
           direction="column"
           justifyContent="center"
           alignItems="center"
+          style={{ height: "100%" }}
         >
-          {" "}
-          Loading your stack...{" "}
+          <Grid item>
+            <HeartSpinner color="#1DA1F2" size={100} />
+          </Grid>
         </Grid>
       </Background>
     );

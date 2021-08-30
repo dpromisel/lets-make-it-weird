@@ -18,7 +18,7 @@ function App() {
   return (
     <div className="app">
       <BrowserRouter>
-        {isLoading !== 0 && <LinearProgress />}
+        {/* {isLoading !== 0 && <LinearProgress />} */}
         <Routes>
           <Route
             path="/"

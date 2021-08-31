@@ -53,11 +53,12 @@ function ProfileStack() {
   }
 
   if (data) {
-    if (count > 5 && !hasShared) {
+    if (count >= 5 && !hasShared) {
       return <Navigate to="/share" />;
     } else if (data?.unswiped.length > 0) {
       return (
         <Swiper
+          incrementCount={() => setCount(count + 1)}
           profiles={data.relationships}
           fetchMore={refetch}
           swipes={data.likes.length + data.dislikes.length}

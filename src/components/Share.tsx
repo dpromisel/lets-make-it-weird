@@ -29,7 +29,7 @@ function Share() {
   );
 
   if (hasShared) {
-    return <Navigate to="/match" />;
+    return <Navigate to="/swipe" />;
   }
 
   return (
@@ -43,7 +43,7 @@ function Share() {
       >
         <Grid item>
           <h2 style={{ color: "white", fontSize: "28px" }}>
-            You've swiped through your first 10 mutuals.
+            You've swiped through your first 5 mutuals.
           </h2>
         </Grid>
         <Grid item>

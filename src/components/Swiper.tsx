@@ -13,6 +13,7 @@ function Swiper({
   profiles,
   swipes,
   fetchMore,
+  incrementCount,
 }: {
   profiles: {
     target: TwitterUser;
@@ -22,11 +23,10 @@ function Swiper({
   }[];
   swipes: number;
   fetchMore: () => void;
+  incrementCount: () => void;
 }) {
   const navigate = useNavigate();
-  const { hasShared } = useContext(AuthContext);
   const [index, setIndex] = useState<number>(0);
-  const [count, setCount] = useState<number>(swipes);
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
@@ -72,7 +72,7 @@ function Swiper({
         } else {
           incrementCur();
         }
-        setCount(count + 1);
+        incrementCount();
       },
     }
   );
@@ -111,11 +111,7 @@ function Swiper({
         path="/"
         element={
           profiles[index].target ? (
-            count > 10 && !hasShared ? (
-              <Navigate to="/share" />
-            ) : (
-              <SwiperView user={profiles[index].target} swipe={swipe.mutate} />
-            )
+            <SwiperView user={profiles[index].target} swipe={swipe.mutate} />
           ) : (
             <Background>
               <> </>

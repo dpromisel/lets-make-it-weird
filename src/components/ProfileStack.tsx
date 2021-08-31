@@ -51,8 +51,9 @@ function ProfileStack() {
       </Background>
     );
   }
+
   if (data) {
-    if (count > 10 && !hasShared) {
+    if (count > 5 && !hasShared) {
       return <Navigate to="/share" />;
     } else if (data?.unswiped.length > 0) {
       return (
@@ -65,14 +66,37 @@ function ProfileStack() {
     } else {
       return (
         <Background>
-          <> Hmmm not seeing any mutuals... </>
+          <Grid
+            container
+            item
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            style={{ height: "100%" }}
+          >
+            <Grid item>
+              <h1> You've made it the end! You have no more swipes left. </h1>
+            </Grid>
+          </Grid>
         </Background>
       );
     }
   } else {
     return (
       <Background>
-        <> Loading... </>
+        <Grid
+          container
+          item
+          direction="column"
+          justifyContent="center"
+          alignItems="center"
+          style={{ height: "100%" }}
+        >
+          <Grid item>
+            <h1> Looks like we're having some load issues... </h1>
+            <h2> The nerds have been notified. Please try again later. </h2>
+          </Grid>
+        </Grid>
       </Background>
     );
   }

@@ -27,9 +27,19 @@ function Swiper({
   const { hasShared } = useContext(AuthContext);
   const [index, setIndex] = useState<number>(0);
   const [count, setCount] = useState<number>(swipes);
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
     setIndex(0);
+    const hasProfile = profiles.some((prof: any) => prof !== false);
+    if (!hasProfile) {
+      if (!error) {
+        fetchMore();
+      }
+      setError(true);
+    } else {
+      setError(false);
+    }
   }, [profiles]);
 
   useEffect(() => {
@@ -66,6 +76,30 @@ function Swiper({
       },
     }
   );
+
+  if (error) {
+    return (
+      <Background>
+        <Grid
+          container
+          item
+          direction="column"
+          justifyContent="center"
+          alignItems="center"
+          style={{ height: "100%" }}
+        >
+          <Grid item>
+            <h1> Looks like we're having some load issues... </h1>
+            <h2>
+              {" "}
+              The <i> nerds </i> have been notified. Please refresh or try again
+              later.{" "}
+            </h2>
+          </Grid>
+        </Grid>
+      </Background>
+    );
+  }
 
   return (
     <Routes>

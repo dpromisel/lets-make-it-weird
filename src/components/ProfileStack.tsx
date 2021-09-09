@@ -9,6 +9,7 @@ import { Navigate } from "react-router-dom";
 import Background from "./Background";
 import Swiper from "./Swiper";
 import { HeartSpinner } from "react-spinners-kit";
+import Loading from "./Loading";
 
 function ProfileStack() {
   const { user, hasShared } = useContext(AuthContext);
@@ -34,22 +35,7 @@ function ProfileStack() {
   );
 
   if (isLoading) {
-    return (
-      <Background>
-        <Grid
-          container
-          item
-          direction="column"
-          justifyContent="center"
-          alignItems="center"
-          style={{ height: "100%" }}
-        >
-          <Grid item>
-            <HeartSpinner color="#1DA1F2" size={100} />
-          </Grid>
-        </Grid>
-      </Background>
-    );
+    return <Loading />;
   }
 
   if (data) {

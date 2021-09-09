@@ -1,7 +1,7 @@
 import { Button, LinearProgress } from "@material-ui/core";
 import React, { useContext } from "react";
 import { useIsFetching } from "react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import Dislikes from "./components/Dislikes";
 import Likes from "./components/Likes";
@@ -11,19 +11,27 @@ import Share from "./components/Share";
 import UserPreview from "./components/user/UserPreview";
 import Swiper from "./components/Swiper";
 import ProfileStack from "./components/ProfileStack";
+import Loading from "./components/Loading";
 
 function App() {
-  const { user } = useContext(AuthContext);
-  const isLoading = useIsFetching();
+  const { user, isFetching } = useContext(AuthContext);
+
+  if (isFetching) return <Loading />;
+
   return (
     <div className="app">
       <BrowserRouter>
-        {/* {isLoading !== 0 && <LinearProgress />} */}
         <Routes>
           <Route
             path="/"
+            element={user ? <Navigate to="/swipe" /> : <Login />}
+          />
+
+          <Route
+            path="/preview"
             element={user ? <UserPreview user={user} /> : <Login />}
           />
+
           <Route path="/swipe" element={user ? <ProfileStack /> : <Login />} />
           <Route
             path="/swipe/*"

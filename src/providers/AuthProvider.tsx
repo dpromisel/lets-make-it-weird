@@ -18,10 +18,12 @@ export const AuthContext = createContext<{
   user: TwitterUser;
   tweets: Tweet[];
   hasShared: boolean;
+  isFetching: boolean;
 }>({
   user: null,
   tweets: [],
   hasShared: false,
+  isFetching: true,
 });
 
 const oauth_token = new URLSearchParams(window.location.search).get(
@@ -36,7 +38,7 @@ const AuthProvider = ({ children }: ContextProps) => {
   const [tweets, setTweets] = useState([]);
   const [hasShared, setHasShared] = useState(true);
 
-  const { refetch } = useQuery("user", async () => {
+  const { refetch, isFetching } = useQuery("user", async () => {
     const token = getTempStorage("access_token");
     const secret = getTempStorage("access_secret");
     const userId = getTempStorage("user_id");
@@ -83,7 +85,7 @@ const AuthProvider = ({ children }: ContextProps) => {
   }, [oauth_token, oauth_verifier]);
 
   return (
-    <AuthContext.Provider value={{ user, tweets, hasShared }}>
+    <AuthContext.Provider value={{ user, tweets, hasShared, isFetching }}>
       {children}
     </AuthContext.Provider>
   );

@@ -67,7 +67,7 @@ function Swiper({
     },
     {
       onSettled: (a, b, v) => {
-        if (v === "like") {
+        if (v === "like" && profiles[index].likesBack) {
           navigate("/swipe/match");
         } else {
           incrementCur();

@@ -20,11 +20,13 @@ function Share() {
       const token = getTempStorage("access_token");
       const secret = getTempStorage("access_secret");
       if (token && secret) {
-        await checkIfShared(token, secret);
+        return await checkIfShared(token, secret);
       }
     },
     {
-      onSettled: () => qc.invalidateQueries("user"),
+      onSettled: (shared) => {
+        if (shared) qc.invalidateQueries("user");
+      },
     }
   );
 
